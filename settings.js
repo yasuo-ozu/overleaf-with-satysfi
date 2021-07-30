@@ -52,6 +52,7 @@ const settings = {
 
   brandPrefix: '',
 
+  validRootDocExtensions: ['tex', 'Rtex', 'ltx', 'saty'],
   allowAnonymousReadAndWriteSharing:
     process.env.SHARELATEX_ALLOW_ANONYMOUS_READ_AND_WRITE_SHARING === 'true',
 

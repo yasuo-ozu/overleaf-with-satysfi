@@ -7,6 +7,33 @@ FROM $SHARELATEX_BASE_TAG
 
 WORKDIR /var/www/sharelatex
 
+# Install SATySFi
+# ---------------
+#
+
+ENV SATYSFI_VERSION=0.0.6-53-g2867e4d9
+ENV SATYROGRAPHOS_VERSION=0.0.2.10
+ENV OPAM_VERSION=2.0.8
+
+RUN bash -c "curl https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh > ./installer.sh" \
+  && chmod +x ./installer.sh \
+  && echo "/usr/bin" | ./installer.sh --version ${OPAM_VERSION} \
+  && opam init --disable-sandboxing -n && opam update -y \
+  && opam repository add --all-switches satysfi-external https://github.com/gfngfn/satysfi-external-repo.git \
+  && opam repository add --all-switches satyrographos-repo https://github.com/na4zagin3/satyrographos-repo.git \
+  && opam install -y depext \
+  && apt-get update \
+  && apt-get install -y pkg-config \
+  && opam depext conf-pkg-config \
+  && opam depext satysfi.${SATYSFI_VERSION} satysfi-dist.${SATYSFI_VERSION} satyrographos.${SATYROGRAPHOS_VERSION} \
+#&& rm -rf /var/lib/apt/lists/* \
+  && opam install -y satysfi.${SATYSFI_VERSION} satysfi-dist.${SATYSFI_VERSION} satyrographos.${SATYROGRAPHOS_VERSION} \
+  && rm -r /usr/share/satysfi \
+  && opam exec -- satyrographos install --copy --output /usr/share/satysfi/dist \
+  && chmod -R 0755 /usr/share/satysfi \
+  && cp /root/.opam/default/bin/satysfi /usr/bin/satysfi
+
+
 # Add required source files
 # -------------------------
 ADD ${baseDir}/genScript.js /var/www/sharelatex/genScript.js
@@ -76,6 +103,8 @@ ENV WEB_API_USER "sharelatex"
 ENV SHARELATEX_APP_NAME "Overleaf Community Edition"
 
 ENV OPTIMISE_PDF "true"
+
+ENV ADDITIONAL_TEXT_EXTENSIONS "saty,satyg,satyh"
 
 
 EXPOSE 80
