@@ -20,6 +20,15 @@
   Figure 1: A screenshot of Overleaf Server Pro's comments and tracked changes features.
 </p>
 
+## SATySFi support
+
+This fork supports SATySFi. To compile, add the following `latexmkrc` in your projest:
+
+```latexmkrc
+`satysfi test.saty -o output.pdf 2>&1 > output.log`;
+exit(0);
+```
+
 ## Key Features
 
 [Overleaf](https://www.overleaf.com) is an open-source online real-time collaborative LaTeX editor. We run a hosted version at [www.overleaf.com](https://www.overleaf.com), but you can also run your own local version, and contribute to the development of Overleaf.
